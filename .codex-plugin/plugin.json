@@ -1,0 +1,34 @@
+{
+  "name": "oh-story-skills",
+  "version": "0.6.0",
+  "description": "Codex-native Chinese web novel writing toolbox for scanning, analysis, drafting, review, de-AI polishing, import, cover generation, and browser-assisted workflows.",
+  "author": {
+    "name": "worldwonderer"
+  },
+  "license": "MIT",
+  "keywords": [
+    "novel",
+    "web-novel",
+    "writing",
+    "analysis",
+    "chinese"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Oh Story Skills",
+    "shortDescription": "Codex-native web novel writing toolbox.",
+    "longDescription": "A Chinese web novel workflow plugin for Codex, covering market scanning, story deconstruction, long-form and short-form writing, review, de-AI polishing, import, cover generation, and browser-assisted data collection.",
+    "developerName": "worldwonderer",
+    "category": "Writing",
+    "capabilities": [
+      "Write",
+      "Research",
+      "Review"
+    ],
+    "defaultPrompt": [
+      "$story 帮我规划一本网文",
+      "$story-long-write 帮我开一本长篇",
+      "$story-review 审查这几章的问题"
+    ]
+  }
+}

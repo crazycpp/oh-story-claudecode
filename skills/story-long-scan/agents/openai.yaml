@@ -1,0 +1,6 @@
+interface:
+  display_name: Long Novel Market Scan
+  short_description: 用 Codex Browser/web 或用户数据分析长篇平台榜单和题材趋势。
+  default_prompt: "$story-long-scan 分析长篇网文平台榜单，提炼可写题材和风险。"
+policy:
+  allow_implicit_invocation: true

@@ -18,10 +18,10 @@
 - 识别章节分隔符（第X章、Chapter X、数字编号等）
 - 提取章节标题，记录每章字数
 
-### 阶段 2：原子提取（并行 Agent 处理每章）
+### 阶段 2：原子提取（Codex 默认串行/批处理，legacy 可并行 Agent 处理每章）
 
 优先使用 chapter-extractor agent 并行处理。每章 spawn 一个 agent，每次 5-8 个并发。
-Agent 不可用时退回主线程串行处理。
+Codex 默认由主线程串行或分批处理。Legacy/Claude Compatibility 模式下，Agent 不可用时退回主线程串行处理。
 
 Agent 输出格式严格对齐本阶段 A/B/C 三部分的合并输出，详见 output-templates.md 阶段2模板。
 

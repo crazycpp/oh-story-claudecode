@@ -1,0 +1,6 @@
+interface:
+  display_name: Long Novel Analysis
+  short_description: 串行或分批拆解长篇作品的黄金三章、角色架构、爽点和节奏。
+  default_prompt: "$story-long-analyze 拆解这部长篇小说的黄金三章和商业结构。"
+policy:
+  allow_implicit_invocation: true

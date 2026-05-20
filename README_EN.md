@@ -4,7 +4,7 @@
 
 # oh-story-claudecode
 
-A web novel writing skill pack for Claude Code and OpenClaw. Covers the full pipeline for long-form and short-form Chinese web novels: trend scanning, deconstruction, writing, AI tone removal, and cover generation.
+A Codex-native web novel writing plugin pack with Claude Code / OpenClaw compatibility. It covers the full pipeline for long-form and short-form Chinese web novels: trend scanning, deconstruction, writing, review, AI tone removal, and cover generation.
 
 ## Core Approach
 
@@ -69,7 +69,30 @@ flowchart LR
     write_s --> deslop
 ```
 
-## Installation
+## Codex Usage
+
+This repo includes `.codex-plugin/plugin.json`, so Codex can identify it as a plugin and load the 13 skills under `./skills/`.
+
+The full Chinese guide is available at [Codex 用户使用指南](CODEX_GUIDE.md).
+
+Common prompts:
+
+```text
+$story Help me plan a Chinese web novel
+$story-long-write Help me start a long-form serial
+$story-short-write Help me write a Zhihu Yanxuan-style short story
+$story-review Review these chapters
+$story-cover Generate a cover from the title, author, and genre
+```
+
+Codex defaults:
+
+- `$story` is the router entry point.
+- Scanning and browser tasks prefer Codex Browser / web capabilities.
+- Cover generation prefers Codex `image_gen`.
+- Writing, deconstruction, review, and de-AI polishing run in the current Codex session and do not require `.claude`, Claude subagents, or hooks.
+
+## Claude/OpenClaw Installation
 
 **Option 1** Tell Claude Code / OpenClaw directly:
 
@@ -89,7 +112,7 @@ Re-run the same command to update.
 
 | Skill | Trigger | Description |
 |:------|:--------|:------------|
-| `story-setup` | `/story-setup` | Environment setup — deploys hooks/rules/agents/CLAUDE.md in one click |
+| `story-setup` | `$story-setup` / `/story-setup` | Codex project structure and tracking files by default; Claude/OpenClaw compatibility can deploy hooks/rules/agents/CLAUDE.md |
 | `story` | `/story` | Toolbox router — routes fuzzy intents to the matching skill |
 | `story-long-write` | `/story-long-write` | Long-form writing — outline building, character design, prose output |
 | `story-long-analyze` | `/story-long-analyze` | Long-form deconstruction — Golden First 3 Chapters, payoff design, pacing analysis |
@@ -99,11 +122,11 @@ Re-run the same command to update.
 | `story-short-scan` | `/story-short-scan` | Short-form trend scan — Zhihu Yanayan/Fanqie short-form trending data |
 | `story-deslop` | `/story-deslop` | De-AI-ify — detect and remove AI writing traces |
 | `story-import` | `/story-import` | Reverse import — parse existing novels into standard project structure |
-| `story-review` | `/story-review` | Multi-perspective review — 4-agent adversarial review + Fanqie/Qidian/Zhihu scoring rubrics |
-| `story-cover` | `/story-cover` | Cover generation — title & genre analysis + GPT-Image-2 image generation |
-| `browser-cdp` | `/browser-cdp` | Browser control — CDP protocol for scraping with reusable login sessions |
+| `story-review` | `$story-review` / `/story-review` | Codex single-session four-dimensional review: structure, characters, prose, consistency |
+| `story-cover` | `$story-cover` / `/story-cover` | Codex image_gen first — title and genre analysis plus cover generation |
+| `browser-cdp` | `$browser-cdp` / `/browser-cdp` | Legacy CLI backend — CDP protocol for scraping with reusable login sessions |
 
-Natural language also triggers: `帮我开书` ("help me start writing") → `story-long-write`, `这篇太AI了` ("this is too AI-ish") → `story-deslop`, `把我的书导进来` ("import my book") → `story-import`, `沈栀现在什么状态` ("what's Shen Zhi's current status") → `story-explorer`.
+Natural language also triggers: `帮我开书` ("help me start writing") → `story-long-write`, `这篇太AI了` ("this is too AI-ish") → `story-deslop`, `把我的书导进来` ("import my book") → `story-import`. For story-state questions such as `沈栀现在什么状态`, Codex reads project tracking and setting files by default; Claude/OpenClaw compatibility mode can use story-explorer.
 
 <details>
 <summary>Cover generation example</summary>
@@ -140,9 +163,9 @@ demo/拆文库-盘龙/
 
 </details>
 
-## Agent System
+## Claude/OpenClaw Compatibility: Agent System
 
-Writing skills internally coordinate 7 specialized agents:
+Codex defaults do not depend on agents. Claude Code / OpenClaw compatibility mode can still coordinate 7 specialized agents:
 
 | Agent | Model | Role |
 |:------|:------|:-----|
@@ -158,7 +181,7 @@ Agents load writing theory from `references/` on demand (character design, dialo
 
 ## Automation Hooks
 
-6 hooks deployed automatically by `/story-setup`:
+Codex default `$story-setup` does not create `.claude` or register hooks. Claude/OpenClaw compatibility mode can deploy 6 hooks through `/story-setup`:
 
 | Hook | Trigger | Function |
 |:-----|:---------|:---------|

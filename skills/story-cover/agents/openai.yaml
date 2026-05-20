@@ -1,0 +1,6 @@
+interface:
+  display_name: Story Cover
+  short_description: 默认使用 Codex image_gen 生成网文封面，并保留 legacy API 后端说明。
+  default_prompt: "$story-cover 根据书名、作者和题材帮我生成一张网文封面。"
+policy:
+  allow_implicit_invocation: true

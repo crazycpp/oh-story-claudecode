@@ -1,0 +1,6 @@
+interface:
+  display_name: Browser CDP Legacy Backend
+  short_description: Claude/OpenClaw legacy CLI 浏览器后端；Codex 默认优先使用 Browser 或 web 能力。
+  default_prompt: "$browser-cdp 在需要 legacy CLI 浏览器后端时，说明如何连接 Chrome CDP。"
+policy:
+  allow_implicit_invocation: false

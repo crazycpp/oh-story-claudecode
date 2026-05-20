@@ -1,0 +1,6 @@
+interface:
+  display_name: Story Router
+  short_description: 网文工具箱总入口，按需求路由到扫榜、拆文、写作、审查、封面等 Codex skill。
+  default_prompt: "$story 作为网文工具箱路由，帮我判断下一步该用哪个能力。"
+policy:
+  allow_implicit_invocation: true

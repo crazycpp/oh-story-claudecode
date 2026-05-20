@@ -1,0 +1,6 @@
+interface:
+  display_name: Story Review
+  short_description: 当前 Codex 会话按结构、角色、表达、设定四维完成稳定审查。
+  default_prompt: "$story-review 按多维度审查这几章，并输出问题级别和修改建议。"
+policy:
+  allow_implicit_invocation: true

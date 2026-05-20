@@ -1,0 +1,6 @@
+interface:
+  display_name: Story Project Setup
+  short_description: Codex 默认创建小说项目结构和追踪文件；Claude/OpenClaw 基础设施作为兼容路径。
+  default_prompt: "$story-setup 为我的小说项目创建 Codex 默认目录、追踪文件和写作规则。"
+policy:
+  allow_implicit_invocation: true

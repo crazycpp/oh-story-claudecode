@@ -71,6 +71,7 @@ function fetchBookDetail(port, token, bookId) {
 const args = process.argv.slice(2);
 const PORT = parseInt(getArg(args, "--port") || "9222", 10);
 const OUTDIR = getArg(args, "--outdir") || ".";
+fs.mkdirSync(OUTDIR, { recursive: true });
 const PAGES = parseInt(getArg(args, "--pages") || "5", 10);
 const CHANNEL = getArg(args, "--channel") || "all";
 const DETAIL = args.includes("--detail");

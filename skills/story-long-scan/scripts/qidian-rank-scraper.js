@@ -127,6 +127,7 @@ const PORT = parseInt(getArg(args, "--port") || "9222", 10);
 const OUTDIR = getArg(args, "--outdir") || ".";
 const RANKTYPE = getArg(args, "--type") || "hotsales";
 const FETCH_DETAIL = (getArg(args, "--detail") || "no") === "yes";
+fs.mkdirSync(OUTDIR, { recursive: true });
 
 function scrapeRank(port, rankTypeId) {
   const rt = RANK_TYPES.find((r) => r.id === rankTypeId);

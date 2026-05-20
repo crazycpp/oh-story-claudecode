@@ -1,0 +1,6 @@
+interface:
+  display_name: Short Story Market Scan
+  short_description: 用 Codex Browser/web 或用户数据分析短篇平台热题材、情绪模型和传播点。
+  default_prompt: "$story-short-scan 分析短篇网文市场，找近期可写的情绪方向。"
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,6 @@
+interface:
+  display_name: Short Story Writer
+  short_description: 在当前 Codex 会话中完成短篇构思、小节大纲、正文分批写作和审查。
+  default_prompt: "$story-short-write 帮我写一篇短篇网文，从构思到正文。"
+policy:
+  allow_implicit_invocation: true

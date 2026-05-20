@@ -15,6 +15,8 @@ metadata:
 
 **执行规则：短篇以情绪为目标函数，所有内容为情绪服务。**
 
+Codex 默认由当前会话完成构思、小节大纲、正文分批写作、去 AI 味和一致性检查。没有 `.claude` 目录或 narrative-writer agent 时，也必须能完整执行。下文所有 Agent 调用都属于 Legacy/Claude Compatibility 的可选增强，只有用户明确要求多 agent/Claude 兼容模式时才使用。
+
 ---
 
 ## 执行规则
@@ -29,7 +31,7 @@ metadata:
 
 ## 格式规范（最高优先级）
 
-详细规则见 `references/format-and-structure.md`，写作前必须加载。**主会话与 narrative-writer 子代理使用同一套正文格式**：正文只允许保存在 `正文.md`，正文段落之间不加空行，对话使用半角双引号，短篇小节标记全文统一（默认 `###1.`/`###2.`）。如果子代理输出与主会话格式不一致，按本格式规范重排后再写入文件。
+详细规则见 `references/format-and-structure.md`，写作前必须加载。**Codex 主会话输出就是默认正文格式**：正文只允许保存在 `正文.md`，正文段落之间不加空行，对话使用半角双引号，短篇小节标记全文统一（默认 `###1.`/`###2.`）。如果使用 legacy 子代理输出，写入前仍按本格式规范重排。
 
 ---
 
@@ -99,7 +101,7 @@ metadata:
 3. 写入本篇 `设定.md` 的“对标摘要”区，写作时每个场景从中召回 1-2 个相关技法
 4. 如只找到原文、未找到拆文报告，提示用户先运行 `/story-short-analyze`；如用户要求继续，也可只按原文做弱参考
 
-#### Agent 调用：story-architect
+#### Legacy/Claude Compatibility：Agent 调用：story-architect
 
 构思阶段，如果项目已部署 story-architect agent（检查 `.claude/agents/story-architect.md` 是否存在），可 spawn `Agent(subagent_type: "story-architect", prompt: "项目目录：{dir}\n任务类型：短篇构思\n查询参数：{情绪目标+题材方向}")` 辅助框架设计。如 agent 不可用，由主线程直接执行。
 
@@ -148,7 +150,7 @@ metadata:
 5. 反转信息差验证（公式见 writing-workflow.md）
 6. 伏笔回查清单（标准见 writing-workflow.md）
 
-#### Agent 调用：character-designer
+#### Legacy/Claude Compatibility：Agent 调用：character-designer
 
 设计任务完成后，如果项目已部署 character-designer agent（检查 `.claude/agents/character-designer.md` 是否存在），可 spawn `Agent(subagent_type: "character-designer", prompt: "项目目录：{dir}\n任务类型：角色设定\n查询参数：{人设速写+关系}")` 辅助角色设定和语言风格档案。如 agent 不可用，由主线程直接执行。
 
@@ -181,7 +183,7 @@ metadata:
 
 **写作指令：按三维度织入逐场景写作，不是翻译大纲。每个场景让读者和主角一起经历。三个维度（发生、感知、反应）同时织入同一段连续正文——不按维度分段，不用"先写发生再补感知"的方式写作。织入后仍必须按镜头断段：一段只承载一个动作/信息变化，优先一段一句，避免一段到底。输出前做密度重排：段落 >60 字按句号/动作转折拆开，单句 >45 字拆短。**
 
-#### Agent 调用：narrative-writer
+#### Legacy/Claude Compatibility：Agent 调用：narrative-writer
 
 正文写作阶段默认由主会话按 2-3 节/批分批写正文，主会话输出是短篇正文的标准形态。不要要求单次 agent spawn 完成 8000+ 字全文。每批写完后先更新“已写小节摘要”（3-5 条：已揭示信息、情绪位置、未回收伏笔、下一批衔接句），下一批必须先读取该摘要和 `正文.md` 尾部 300-500 字再续写。只有在用户明确要求子代理、主会话上下文不足，或需要隔离一段试写时，才检查 `.claude/agents/narrative-writer.md` 并 spawn `Agent(subagent_type: "narrative-writer", prompt: "项目目录：{dir}\n任务描述：写正文\n输出文件：正文.md\n情绪目标：{从核心框架读取}\n小节大纲：小节大纲.md\n涉及角色：{从核心框架读取}\n对标/拆文路径：{本次查找到的 对标/{书名}/ 或 拆文库/{书名}/，没有则写 无}\n拆文召回摘要：{本场景最相关的结构/情绪/反转/写作手法模块，最多5条；没有则写 无}\n格式硬约束：必须完全遵守 story-short-write/references/format-and-structure.md；全文小节标记统一，默认 ###1.、###2.；段落之间不加空行；对话独立成行并使用半角双引号；禁止使用 --- 分隔正文片段；禁止把自检/说明/审查报告写入正文.md。\n写作硬约束：按三维度织入写场景，但仍必须按镜头断段；一段只承载一个动作/信息变化，优先一段一句，避免一段到底。输出前做密度重排：段落 >60 字按句号/动作转折拆开，单句 >45 字拆短。")`。无论由谁写作，最终写入 `正文.md` 前都必须按同一格式规范重排一次，保证主会话与子代理输出格式一致。
 
@@ -314,7 +316,7 @@ metadata:
 加载 `references/writing-workflow.md` 中的精修清单完成检查。
 重点：开头钩子、情绪曲线、反转铺垫、每句话价值、格式规范、AI 腔排查。
 
-#### Agent 调用：narrative-writer（去AI味）+ consistency-checker
+#### Legacy/Claude Compatibility：Agent 调用：narrative-writer（去AI味）+ consistency-checker
 
 精修阶段，如果项目已部署对应 agent，可 spawn：
 - `Agent(subagent_type: "narrative-writer", prompt: "项目目录：{dir}\n任务描述：去AI味+格式检查\n检查范围：{正文文件}")` — 执行去AI味（6 Gate）和格式合规检查

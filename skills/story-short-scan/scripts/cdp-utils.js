@@ -8,7 +8,7 @@
  *   node {SKILL_DIR}/browser-cdp/scripts/setup-cdp-chrome.js 9222
  */
 
-const { execSync } = require("child_process");
+const { spawnFileSync } = require("child_process");
 
 // ---------------------------------------------------------------------------
 // agent-browser 工具函数
@@ -21,15 +21,30 @@ const { execSync } = require("child_process");
  * @returns {string} stdout（trim 后）
  */
 function ab(port, ...args) {
-  const cmd = args.map((a) => `"${a.replace(/"/g, '\\"')}"`).join(" ");
+  const cliArgs = ["--cdp", String(port), ...args.map((a) => String(a))];
   try {
-    return execSync(`agent-browser --cdp ${port} ${cmd}`, {
+    const result = spawnFileSync("agent-browser", cliArgs, {
       encoding: "utf-8",
       timeout: 20000,
       stdio: ["pipe", "pipe", "pipe"],
-    }).trim();
+      shell: false,
+    });
+    if (result.error) {
+      const reason = result.error.code === "ENOENT"
+        ? "agent-browser CLI not found. Install it only for the legacy CLI backend, or use Codex Browser/web as the default path."
+        : result.error.message;
+      console.error(`  ✗ agent-browser failed: ${reason}`);
+      return "";
+    }
+    if (result.status !== 0) {
+      const stderr = (result.stderr || "").trim();
+      console.error(`  ✗ agent-browser exited with ${result.status}${stderr ? `: ${stderr}` : ""}`);
+      return (result.stdout || "").trim();
+    }
+    return (result.stdout || "").trim();
   } catch (e) {
-    return e.stdout?.trim() || "";
+    console.error(`  ✗ agent-browser execution error: ${e.message}`);
+    return "";
   }
 }
 

@@ -52,13 +52,18 @@ metadata:
 
 | 优先级 | 模式 | 说明 | 何时用 |
 |--------|------|------|--------|
-| 1 | **browser-cdp 采集** | 直接抓取平台页面，产出结构化文件 | 有 Chrome 环境时（优先） |
-| 2 | **用户提供** | 用户粘贴榜单截图/文字/链接 | 用户已有数据时 |
-| 3 | **内置知识** | 基于知识库趋势数据做分析 | 无法联网、用户无数据时 |
+| 1 | **Codex Browser / web 采集** | 直接打开或抓取平台页面，产出结构化文件 | Codex 默认优先 |
+| 2 | **legacy CLI 采集** | 使用 browser-cdp/agent-browser 脚本抓取平台页面 | 用户明确要求 CLI 后端或需要本机 Chrome 登录态 |
+| 3 | **用户提供** | 用户粘贴榜单截图/文字/链接 | 用户已有数据时 |
+| 4 | **内置知识** | 基于知识库趋势数据做分析 | 无法联网、用户无数据时 |
 
-#### browser-cdp 采集模式
+#### Codex Browser / web 采集模式
 
-使用 `/browser-cdp` 启动 Chrome，直接抓取平台榜单页面的结构化数据。
+Codex 默认直接使用 Browser / web 能力访问榜单页面、等待加载、提取字段并写入结构化报告。不要求用户安装 `agent-browser`。
+
+#### Legacy/Claude Compatibility：browser-cdp 采集模式
+
+用户明确要求 legacy CLI 后端时，使用 `/browser-cdp` 启动 Chrome，直接抓取平台榜单页面的结构化数据。
 
 **采集流程**：
 1. 启动 browser-cdp，打开目标榜单 URL

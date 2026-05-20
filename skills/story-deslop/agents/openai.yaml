@@ -1,0 +1,6 @@
+interface:
+  display_name: De-AI Polish
+  short_description: 当前 Codex 会话直接诊断并去除网文文本中的 AI 味和套路句式。
+  default_prompt: "$story-deslop 帮我检查并去除这段正文的 AI 味。"
+policy:
+  allow_implicit_invocation: true

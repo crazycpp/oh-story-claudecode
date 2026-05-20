@@ -105,6 +105,7 @@ function extractBookUrls(port) {
 const args = process.argv.slice(2);
 const PORT = parseInt(getArg(args, "--port") || "9222", 10);
 const OUTDIR = getArg(args, "--outdir") || ".";
+fs.mkdirSync(OUTDIR, { recursive: true });
 const RANKTYPE = getArg(args, "--type") || "all";
 
 function main() {

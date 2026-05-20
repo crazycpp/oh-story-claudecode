@@ -2,7 +2,7 @@
 
 # oh-story-claudecode
 
-网文写作 skill 包，覆盖长篇与短篇网络小说的扫榜、拆文、写作、去AI味、封面图全流程。适配 Claude Code、OpenClaw。
+Codex 原生网文写作插件包，覆盖长篇与短篇网络小说的扫榜、拆文、写作、审查、去 AI 味、封面图全流程。保留 Claude Code / OpenClaw 兼容路径。
 
 ## 核心思路
 
@@ -67,7 +67,30 @@ flowchart LR
     write_s --> deslop
 ```
 
-## 安装
+## Codex 安装与使用
+
+本仓库包含 `.codex-plugin/plugin.json`，Codex 可按插件识别并加载 `./skills/` 下的 13 个 skill。
+
+完整说明见 [Codex 用户使用指南](CODEX_GUIDE.md)。
+
+常用入口：
+
+```text
+$story 帮我规划一本网文
+$story-long-write 帮我开一本长篇
+$story-short-write 帮我写一篇知乎盐言风格短篇
+$story-review 审查这几章的问题
+$story-cover 根据书名和题材生成封面
+```
+
+Codex 默认路径：
+
+- `$story` 是总入口，会按需求路由到具体 skill。
+- 扫榜和浏览器任务优先使用 Codex Browser / web 能力。
+- 封面生成优先使用 Codex `image_gen` 能力。
+- 写作、拆文、审查和去 AI 味默认由当前 Codex 会话完成，不要求 `.claude` 目录、Claude subagent 或 hooks。
+
+## Claude/OpenClaw 兼容安装
 
 **方式一** 直接告诉 Claude Code / OpenClaw：
 
@@ -87,7 +110,7 @@ npx skills add worldwonderer/oh-story-claudecode -y -g
 
 | Skill | 触发 | 说明 |
 |:------|:-----|:-----|
-| `story-setup` | `/story-setup` `/准备写书` | 环境部署 · hooks/rules/agents/CLAUDE.md 一键部署（已有配置安全合并） |
+| `story-setup` | `$story-setup` `/story-setup` | Codex 默认创建项目结构、追踪文件和写作规则；Claude/OpenClaw 兼容模式可部署 hooks/rules/agents/CLAUDE.md |
 | `story` | `/story` `/网文` | 工具箱路由 · 模糊意图自动分发到对应 skill |
 | `story-long-write` | `/story-long-write` `/写长篇` | 长篇写作 · 大纲搭建、人物设定、正文输出 |
 | `story-long-analyze` | `/story-long-analyze` | 长篇拆文 · 黄金三章、爽点设计、节奏分析 |
@@ -97,15 +120,15 @@ npx skills add worldwonderer/oh-story-claudecode -y -g
 | `story-short-scan` | `/story-short-scan` | 短篇扫榜 · 知乎盐言/番茄短篇风口数据 |
 | `story-deslop` | `/story-deslop` `/去AI味` | 去AI味 · 检测并清除 AI 写作痕迹 |
 | `story-import` | `/story-import` `/导入小说` | 逆向导入 · 将已有小说反向解析为标准项目结构 |
-| `story-review` | `/story-review` `/审查` | 多视角审查 · 4 Agent 多视角审稿 + 番茄/起点/知乎评分标准 |
-| `story-cover` | `/story-cover` `/封面` | 封面生成 · 书名题材分析 + GPT-Image-2 出图 |
-| `browser-cdp` | `/browser-cdp` | 浏览器操控 · CDP 协议复用登录态抓取数据 |
+| `story-review` | `$story-review` `/story-review` | Codex 单会话四维审查 · 故事结构、角色关系、文学表达、设定一致性 |
+| `story-cover` | `$story-cover` `/story-cover` | Codex image_gen 优先 · 书名题材分析 + 封面生成 |
+| `browser-cdp` | `$browser-cdp` `/browser-cdp` | Legacy CLI 后端 · CDP 协议复用登录态抓取数据 |
 
 自然语言同样触发：
 - 「帮我开书」→ `story-long-write`
 - 「这篇太 AI 了」→ `story-deslop`
 - 「把我的书导进来」→ `story-import`
-- 「沈栀现在什么状态」→ 自动 spawn `story-explorer` agent
+- 「沈栀现在什么状态」→ Codex 默认读取项目追踪/设定文件；Claude/OpenClaw 兼容模式可使用 story-explorer agent
 
 <details>
 <summary>封面生成示例</summary>
@@ -142,9 +165,9 @@ demo/拆文库-盘龙/
 
 </details>
 
-## Agent 体系
+## Claude/OpenClaw 兼容：Agent 体系
 
-写作 skill 内部通过 7 个专业 Agent 协作，各司其职：
+Codex 默认不依赖 Agent。Claude Code / OpenClaw 兼容模式可继续通过 7 个专业 Agent 协作：
 
 | Agent | 模型 | 职责 |
 |:------|:-----|:-----|
@@ -158,9 +181,9 @@ demo/拆文库-盘龙/
 
 Agent 按需加载 `references/` 中的写作理论（角色设计、对话技法、反转工具箱等 100+ 份方法论文件），不预占上下文。
 
-## 自动化 Hooks
+## Claude/OpenClaw 兼容：自动化 Hooks
 
-`/story-setup` 部署后自动生效的 6 个 hook：
+Codex 默认 `$story-setup` 不创建 `.claude` 目录、不注册 hooks。Claude/OpenClaw 兼容模式下，`/story-setup` 可部署 6 个 hook：
 
 | Hook | 触发时机 | 功能 |
 |:-----|:---------|:-----|

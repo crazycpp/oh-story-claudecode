@@ -347,8 +347,10 @@ source: 导入反推
 
 - 设置 `.active-book` 指向导入的书名目录
 - 确认项目可以被 story-long-write 识别
-- 检查项目是否已部署 story-setup 基础设施（`.story-deployed` 是否存在）。如不存在，将 `/story-setup` 标记为下一步必需操作（包括 agents、hooks、rules、CLAUDE.md）
-- 可选验证：如果项目已部署 story-explorer agent（检查 `.claude/agents/story-explorer.md` 是否存在），可 spawn `Agent(subagent_type: "story-explorer", prompt: "项目目录：{dir}\n查询类型：progress\n查询参数：导入验证")` 交叉验证迁移数据完整性
+- Codex 默认检查项目是否已有基础目录和追踪文件；如不存在，将 `$story-setup` 标记为下一步必需操作，用于创建项目结构、追踪文件和写作规则。
+- Legacy/Claude Compatibility 模式下，可继续检查 `.story-deployed`，并将 `/story-setup` 标记为 Claude/OpenClaw 基础设施部署入口（包括 agents、hooks、rules、CLAUDE.md）。
+- Codex 默认验证：由当前会话读取导入后的追踪、角色、设定和正文索引，交叉验证迁移数据完整性。
+- Legacy/Claude Compatibility 可选验证：如果用户明确要求 Claude agent 且项目已部署 story-explorer agent（检查 `.claude/agents/story-explorer.md` 是否存在），可 spawn `Agent(subagent_type: "story-explorer", prompt: "项目目录：{dir}\n查询类型：progress\n查询参数：导入验证")` 交叉验证迁移数据完整性
 
 ---
 
