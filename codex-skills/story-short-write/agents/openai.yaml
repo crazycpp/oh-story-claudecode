@@ -1,0 +1,6 @@
+interface:
+  display_name: Short Story Write
+  short_description: 辅助短篇网文构思、结构、正文、情绪拉扯和润色。
+  default_prompt: "$story-short-write 帮我写一篇短篇网文。"
+policy:
+  allow_implicit_invocation: true

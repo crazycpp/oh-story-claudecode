@@ -1,0 +1,6 @@
+interface:
+  display_name: Story Cover
+  short_description: 使用 Codex 图像生成能力制作网文封面。
+  default_prompt: "$story-cover 给我的小说生成一张封面。"
+policy:
+  allow_implicit_invocation: true

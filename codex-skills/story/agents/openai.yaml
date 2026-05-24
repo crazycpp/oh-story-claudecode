@@ -1,0 +1,6 @@
+interface:
+  display_name: Story Router
+  short_description: 根据网文写作、扫榜、拆文、审查等需求路由到对应 Codex 技能。
+  default_prompt: "$story 帮我规划一本网文。"
+policy:
+  allow_implicit_invocation: true
