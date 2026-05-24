@@ -1,0 +1,6 @@
+interface:
+  display_name: Long Story Scan
+  short_description: 使用 Codex 浏览器或网页检索分析长篇平台趋势和热门题材。
+  default_prompt: "$story-long-scan 分析最近长篇网文的题材趋势。"
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,6 @@
+interface:
+  display_name: Short Story Scan
+  short_description: 使用 Codex 浏览器或网页检索分析短篇平台风口和情绪趋势。
+  default_prompt: "$story-short-scan 分析最近短篇网文的情绪风口。"
+policy:
+  allow_implicit_invocation: true

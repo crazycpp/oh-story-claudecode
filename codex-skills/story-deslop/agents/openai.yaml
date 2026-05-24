@@ -1,0 +1,6 @@
+interface:
+  display_name: Story Deslop
+  short_description: 在保留剧情事实的前提下清理 AI 感和模板化表达。
+  default_prompt: "$story-deslop 帮我去掉这段正文的 AI 味。"
+policy:
+  allow_implicit_invocation: true
