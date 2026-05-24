@@ -1,0 +1,6 @@
+interface:
+  display_name: Story Setup
+  short_description: 创建适合 Codex 工作流的通用小说项目结构。
+  default_prompt: "$story-setup 为我的小说项目创建 Codex 默认结构。"
+policy:
+  allow_implicit_invocation: true

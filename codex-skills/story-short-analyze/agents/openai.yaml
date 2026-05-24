@@ -1,0 +1,6 @@
+interface:
+  display_name: Short Story Analyze
+  short_description: 拆解短篇网文的故事核、情绪线、反转和共鸣。
+  default_prompt: "$story-short-analyze 帮我拆解这篇短篇的情绪和反转。"
+policy:
+  allow_implicit_invocation: true

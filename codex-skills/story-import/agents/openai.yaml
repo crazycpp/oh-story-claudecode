@@ -1,0 +1,6 @@
+interface:
+  display_name: Story Import
+  short_description: 把已有小说整理成可继续写作的结构化项目资料。
+  default_prompt: "$story-import 把我已有的小说整理成可继续写作的项目。"
+policy:
+  allow_implicit_invocation: true

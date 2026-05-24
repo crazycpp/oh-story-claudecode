@@ -1,0 +1,6 @@
+interface:
+  display_name: Long Story Analyze
+  short_description: 拆解长篇网文的黄金三章、人设架构、爽点和节奏。
+  default_prompt: "$story-long-analyze 帮我拆解这部长篇的黄金三章。"
+policy:
+  allow_implicit_invocation: true

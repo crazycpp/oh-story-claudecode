@@ -1,0 +1,6 @@
+interface:
+  display_name: Story Review
+  short_description: 审查故事结构、人物、文风、节奏和前后逻辑。
+  default_prompt: "$story-review 审查下面几章的问题。"
+policy:
+  allow_implicit_invocation: true

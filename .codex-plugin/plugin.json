@@ -1,0 +1,35 @@
+{
+  "name": "oh-story-skills",
+  "version": "0.6.8-codex.4",
+  "description": "面向 Codex 的 oh-story 中文网文写作工具箱 overlay。",
+  "author": {
+    "name": "worldwonderer / crazycpp"
+  },
+  "license": "MIT",
+  "keywords": [
+    "novel",
+    "web-novel",
+    "writing",
+    "analysis",
+    "chinese",
+    "codex"
+  ],
+  "skills": "./codex-skills/",
+  "interface": {
+    "displayName": "Oh Story Skills for Codex",
+    "shortDescription": "面向 Codex 的中文网文写作、扫榜、拆文和审查技能。",
+    "longDescription": "一组面向 Codex 的轻量包装技能，复用上游 oh-story 资料和脚本，同时保持上游 skills 目录可同步。",
+    "developerName": "worldwonderer / crazycpp",
+    "category": "Writing",
+    "capabilities": [
+      "Write",
+      "Research",
+      "Review"
+    ],
+    "defaultPrompt": [
+      "$story 帮我规划一本网文",
+      "$story-long-write 帮我开一本长篇",
+      "$story-review 审查这几章的问题"
+    ]
+  }
+}

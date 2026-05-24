@@ -1,0 +1,6 @@
+interface:
+  display_name: Long Story Write
+  short_description: 辅助长篇网文立项、大纲、设定、章节草稿和回炉。
+  default_prompt: "$story-long-write 帮我开一本长篇网文。"
+policy:
+  allow_implicit_invocation: true
