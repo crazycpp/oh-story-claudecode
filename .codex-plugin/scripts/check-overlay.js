@@ -27,6 +27,7 @@ const allowedTopLevel = [
   "codex-skills/",
   "CODEX_GUIDE.md",
   "docs/",
+  "install-codex-plugin.ps1",
 ];
 
 function fail(message) {
