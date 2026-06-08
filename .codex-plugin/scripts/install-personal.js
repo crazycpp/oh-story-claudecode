@@ -13,6 +13,7 @@ const pluginName = "oh-story-skills";
 const pluginDir = path.join(home, "plugins", pluginName);
 const marketplaceDir = path.join(home, ".agents", "plugins");
 const marketplacePath = path.join(marketplaceDir, "marketplace.json");
+const codexConfigPath = path.join(home, ".codex", "config.toml");
 const codexCacheDir = path.join(home, ".codex", "plugins", "cache", "personal", pluginName);
 const legacyWrongPluginDir = path.join(home, ".agents", "plugins", "plugins", pluginName);
 
@@ -93,26 +94,66 @@ function updateMarketplace() {
   writeMarketplace(root);
 }
 
+function escapeTomlLiteral(value) {
+  return value.replaceAll("'", "''");
+}
+
+function ensureSection(text, header, body) {
+  const headerPattern = header.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const sectionPattern = new RegExp(`(^|\\r?\\n)${headerPattern}\\r?\\n[\\s\\S]*?(?=\\r?\\n\\[|$)`);
+
+  if (!sectionPattern.test(text)) {
+    const prefix = text.trimEnd();
+    return `${prefix}${prefix ? "\n\n" : ""}${header}\n${body}\n`;
+  }
+
+  return text.replace(sectionPattern, (section, leading) => {
+    const normalized = body
+      .split("\n")
+      .filter(Boolean)
+      .reduce((current, line) => {
+        const key = line.slice(0, line.indexOf("=")).trim();
+        const keyPattern = new RegExp(`^${key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*=.*$`, "m");
+        return keyPattern.test(current)
+          ? current.replace(keyPattern, line)
+          : `${current.trimEnd()}\n${line}\n`;
+      }, section.trimEnd());
+    return `${leading || ""}${normalized}\n`;
+  });
+}
+
+function updateCodexConfig() {
+  ensureDir(path.dirname(codexConfigPath));
+  const existing = fs.existsSync(codexConfigPath)
+    ? fs.readFileSync(codexConfigPath, "utf8").replace(/^\uFEFF/, "")
+    : "";
+  const source = escapeTomlLiteral(home);
+  let updated = ensureSection(
+    existing,
+    `[plugins."${pluginName}@personal"]`,
+    "enabled = true",
+  );
+  updated = ensureSection(
+    updated,
+    "[marketplaces.personal]",
+    `source_type = "local"\nsource = '${source}'`,
+  );
+  fs.writeFileSync(codexConfigPath, updated, "utf8");
+}
+
 try {
   const removed = cleanupOldInstall();
   ensureDir(path.dirname(pluginDir));
   build(pluginDir);
   updateMarketplace();
+  updateCodexConfig();
 
   for (const target of removed) {
     console.log(`Removed old path: ${target}`);
   }
   console.log(`Installed clean Codex package: ${pluginDir}`);
   console.log(`Updated marketplace: ${marketplacePath}`);
-  console.log("");
-  console.log("Ensure Codex config contains:");
-  console.log("");
-  console.log(`[plugins."${pluginName}@personal"]`);
-  console.log("enabled = true");
-  console.log("");
-  console.log("[marketplaces.personal]");
-  console.log('source_type = "local"');
-  console.log(`source = '${home.replaceAll("\\", "\\\\")}'`);
+  console.log(`Updated Codex config: ${codexConfigPath}`);
 } catch (error) {
   console.error(`install failed: ${error.message}`);
   process.exit(1);
