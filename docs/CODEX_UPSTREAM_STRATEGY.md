@@ -21,6 +21,7 @@ Codex 分支只维护这些路径：
 codex-skills/
 CODEX_GUIDE.md
 docs/
+install-codex-plugin.ps1
 ```
 
 上游主体路径保持原样：
@@ -58,10 +59,22 @@ git push --force-with-lease origin codex/main
 正式本地验证使用干净发布包：
 
 ```powershell
+.\install-codex-plugin.ps1
+```
+
+该 PowerShell 入口只依赖 `node` 和 `git`，不依赖 Python。核心安装逻辑仍在：
+
+```powershell
 node .codex-plugin\scripts\install-personal.js
 ```
 
-该脚本会先清理旧安装、旧缓存和早期误建的旧 junction，再安装最新包：
+如需跳过 git 更新，使用：
+
+```powershell
+.\install-codex-plugin.ps1 -SkipGitUpdate
+```
+
+安装脚本会先清理旧安装、旧缓存和早期误建的旧 junction，再安装最新包：
 
 ```text
 %USERPROFILE%\plugins\oh-story-skills

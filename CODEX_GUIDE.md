@@ -9,10 +9,22 @@
 在仓库根目录运行：
 
 ```powershell
+.\install-codex-plugin.ps1
+```
+
+该 PowerShell 脚本只依赖 `node` 和 `git`，不依赖 Python。它会先更新本地 `codex/main`，再调用：
+
+```powershell
 node .codex-plugin\scripts\install-personal.js
 ```
 
-脚本会先清理旧安装和旧缓存，然后生成并安装最新干净包。会清理的路径包括：
+如果只想安装当前工作区内容，不自动拉取远程分支：
+
+```powershell
+.\install-codex-plugin.ps1 -SkipGitUpdate
+```
+
+安装器会先清理旧安装和旧缓存，然后生成并安装最新干净包。会清理的路径包括：
 
 ```text
 %USERPROFILE%\plugins\oh-story-skills
@@ -138,7 +150,7 @@ skills/
 
 `.codex-plugin/plugin.json` 指向 `./codex-skills/`。每个 wrapper 会按需读取上游 `skills/<skill>/SKILL.md` 和 `skills/<skill>/references/`，但不会改写上游 skill 主体。
 
-不要把源码仓库根目录长期作为 Codex 插件安装目录。这样虽然方便开发，但 Codex 可能会扫描顶层 `skills/`，导致 UI 出现两套 skill。日常使用请运行 `install-personal.js` 安装干净包。
+不要把源码仓库根目录长期作为 Codex 插件安装目录。这样虽然方便开发，但 Codex 可能会扫描顶层 `skills/`，导致 UI 出现两套 skill。日常使用请运行 `install-codex-plugin.ps1` 安装干净包。
 
 ## 7. 维护原则
 
