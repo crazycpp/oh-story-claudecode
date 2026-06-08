@@ -1,6 +1,6 @@
 {
   "name": "oh-story-skills",
-  "version": "0.6.8-codex.4",
+  "version": "0.6.15-codex.1",
   "description": "面向 Codex 的 oh-story 中文网文写作工具箱 overlay。",
   "author": {
     "name": "worldwonderer / crazycpp"
