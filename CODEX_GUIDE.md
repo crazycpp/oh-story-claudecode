@@ -12,11 +12,13 @@
 .\install-codex-plugin.ps1
 ```
 
-该 PowerShell 脚本只依赖 `node` 和 `git`，不依赖 Python。它会先更新本地 `codex/main`，再调用：
+该 PowerShell 脚本依赖 `node` 和可执行的 `codex` CLI；自动更新分支时还需要 `git`，但安装本身不依赖 Python。它会先更新本地 `codex/main`，再构建本地干净包：
 
 ```powershell
 node .codex-plugin\scripts\install-personal.js
 ```
+
+随后脚本会执行 `codex plugin add oh-story-skills@personal`，让 Codex 正式安装并启用该插件，并核验状态为 `installed, enabled`。仅复制插件目录或只写入 `config.toml` 不等同于完成新版 Codex 的插件注册。
 
 如果只想安装当前工作区内容，不自动拉取远程分支：
 

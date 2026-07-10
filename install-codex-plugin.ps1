@@ -14,6 +14,7 @@ $repoRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $repoRoot
 
 Require-Command node
+Require-Command codex
 
 if (-not $SkipGitUpdate) {
   Require-Command git
@@ -36,6 +37,25 @@ if (-not $SkipGitUpdate) {
 
 Write-Host "Installing oh-story-skills as a clean Codex personal plugin..."
 node .codex-plugin\scripts\install-personal.js
+if ($LASTEXITCODE -ne 0) {
+  throw "Failed to build and publish the local Codex plugin package."
+}
+
+Write-Host "Registering oh-story-skills with Codex..."
+codex plugin add oh-story-skills@personal
+if ($LASTEXITCODE -ne 0) {
+  throw "Codex could not register oh-story-skills@personal."
+}
+
+$pluginList = codex plugin list
+if ($LASTEXITCODE -ne 0) {
+  throw "Codex could not verify the installed plugin."
+}
+$pluginLine = $pluginList | Where-Object { $_ -match '^\s*oh-story-skills@personal\s+' } | Select-Object -First 1
+if (-not $pluginLine -or $pluginLine -notmatch 'installed,\s+enabled') {
+  throw "Codex did not report oh-story-skills@personal as installed and enabled."
+}
+Write-Host $pluginLine
 
 Write-Host ""
 Write-Host "Install complete. Restart Codex, then test with:"

@@ -62,11 +62,13 @@ git push --force-with-lease origin codex/main
 .\install-codex-plugin.ps1
 ```
 
-该 PowerShell 入口只依赖 `node` 和 `git`，不依赖 Python。核心安装逻辑仍在：
+该 PowerShell 入口依赖 `node` 和可执行的 `codex` CLI；自动更新分支时还需要 `git`，但安装本身不依赖 Python。核心构建与本地 marketplace 更新逻辑仍在：
 
 ```powershell
 node .codex-plugin\scripts\install-personal.js
 ```
+
+构建完成后，入口脚本必须执行 `codex plugin add oh-story-skills@personal`，再通过 `codex plugin list` 确认状态为 `installed, enabled`。这是新版 Codex 的正式插件注册步骤，不能只依赖手工写入 `config.toml`。
 
 如需跳过 git 更新，使用：
 

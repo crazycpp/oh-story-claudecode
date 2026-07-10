@@ -47,6 +47,14 @@ try {
   fail(`manifest validation failed: ${error.message}`);
 }
 
+const installer = read("install-codex-plugin.ps1");
+if (!installer.includes("codex plugin add oh-story-skills@personal")) {
+  fail("PowerShell installer must register the plugin through codex plugin add");
+}
+if (!installer.includes("installed,\\s+enabled")) {
+  fail("PowerShell installer must verify the installed, enabled status");
+}
+
 if (expectedSkills.length === 0) {
   fail("no upstream skills with SKILL.md were found");
 }
