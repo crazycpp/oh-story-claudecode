@@ -1,25 +1,21 @@
 ---
 name: story-deslop
-description: Codex 原生网文去 AI 味流程。在保留剧情事实的前提下，清理模板化、机械化和 AI 感表达。
+description: Codex 网文去 AI 味入口。执行上游最新删除优先、退化检测、文风保护和 agent fallback 流程。
 ---
 
-# story-deslop for Codex
+# story-deslop for Codex Desktop
 
 Upstream skill: `../../skills/story-deslop/SKILL.md`
 
-## Codex Default
+## Source Of Truth
 
-Polish in the current Codex session:
+Read the upstream skill completely and execute its Codex-compatible workflow. Its deletion-first policy, anti-gaming rules, deterministic scripts, quality gates, and project-file contracts are authoritative.
 
-1. Identify repeated sentence patterns, abstract emotion labels, low-information transitions, and generic AI-like phrasing.
-2. Preserve plot facts, timeline, character intent, relationships, and POV.
-3. Rewrite only the requested scope.
-4. Provide a concise change summary and any remaining risk.
+## Desktop Additions
 
-## Upstream Material
+- Use deployed Codex agents when available.
+- Run upstream deterministic checks and normalization scripts when the task and workspace permit them.
 
-Before rewriting, read the upstream skill and relevant references such as `../../skills/story-deslop/references/anti-ai-writing.md` and banned-word guidance.
+## Fallback
 
-## Compatibility
-
-Legacy/compatibility agent execution is optional upstream. Codex must be able to finish the polish in the current session.
+If the narrative-writer agent is missing or unavailable, follow the upstream direct/solo path and preserve story facts, continuity, intentional style, and word-count constraints.

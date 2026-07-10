@@ -3,25 +3,14 @@ const fs = require("fs");
 const path = require("path");
 const cp = require("child_process");
 const os = require("os");
-const { build, validatePackage } = require("./build-codex-package");
+const {
+  build,
+  discoverSkillNames,
+  validatePackage,
+} = require("./build-codex-package");
 
 const root = path.resolve(__dirname, "..", "..");
-const expectedSkills = [
-  "browser-cdp",
-  "story",
-  "story-cover",
-  "story-deslop",
-  "story-import",
-  "story-long-analyze",
-  "story-long-scan",
-  "story-long-write",
-  "story-review",
-  "story-setup",
-  "story-short-analyze",
-  "story-short-scan",
-  "story-short-write",
-];
-
+const expectedSkills = discoverSkillNames(root);
 const allowedTopLevel = [
   ".codex-plugin/",
   "codex-skills/",
@@ -44,42 +33,81 @@ try {
   if (manifest.skills !== "./codex-skills/") {
     fail("manifest skills must point to ./codex-skills/");
   }
+
+  const upstreamMarketplace = JSON.parse(read(".claude-plugin/marketplace.json"));
+  const upstreamVersion = upstreamMarketplace.metadata?.version;
+  if (!upstreamVersion) {
+    fail("upstream marketplace version is missing");
+  } else if (!manifest.version.startsWith(`${upstreamVersion}-codex.`)) {
+    fail(
+      `manifest version ${manifest.version} must track upstream ${upstreamVersion}`,
+    );
+  }
 } catch (error) {
-  fail(`manifest is not valid JSON: ${error.message}`);
+  fail(`manifest validation failed: ${error.message}`);
+}
+
+if (expectedSkills.length === 0) {
+  fail("no upstream skills with SKILL.md were found");
+}
+
+const wrapperRoot = path.join(root, "codex-skills");
+const actualSkills = fs
+  .readdirSync(wrapperRoot, { withFileTypes: true })
+  .filter((entry) => entry.isDirectory())
+  .filter((entry) => fs.existsSync(path.join(wrapperRoot, entry.name, "SKILL.md")))
+  .map((entry) => entry.name)
+  .sort();
+if (JSON.stringify(actualSkills) !== JSON.stringify(expectedSkills)) {
+  fail(
+    `wrapper set does not match upstream skills: expected ${expectedSkills.join(", ")}; got ${actualSkills.join(", ")}`,
+  );
 }
 
 for (const skill of expectedSkills) {
-  const skillPath = path.join(root, "codex-skills", skill, "SKILL.md");
-  const agentPath = path.join(root, "codex-skills", skill, "agents", "openai.yaml");
-  if (!fs.existsSync(skillPath)) fail(`missing wrapper ${path.relative(root, skillPath)}`);
-  if (!fs.existsSync(agentPath)) fail(`missing metadata ${path.relative(root, agentPath)}`);
+  const skillPath = path.join(wrapperRoot, skill, "SKILL.md");
+  const agentPath = path.join(wrapperRoot, skill, "agents", "openai.yaml");
+  if (!fs.existsSync(skillPath)) {
+    fail(`missing wrapper ${path.relative(root, skillPath)}`);
+    continue;
+  }
+  if (!fs.existsSync(agentPath)) {
+    fail(`missing metadata ${path.relative(root, agentPath)}`);
+  }
 
-  if (fs.existsSync(skillPath)) {
-    const text = fs.readFileSync(skillPath, "utf8");
-    const upstreamRef = `../../skills/${skill}/SKILL.md`;
-    if (!text.includes(upstreamRef)) {
-      fail(`${skill} wrapper must reference upstream skill path`);
-    }
-    const resolvedUpstream = path.resolve(path.dirname(skillPath), upstreamRef);
-    if (!fs.existsSync(resolvedUpstream)) {
-      fail(`${skill} upstream reference does not resolve: ${upstreamRef}`);
-    }
-    const forbidden = [
-      ".claude/agents",
-      ".claude/hooks",
-      "Agent(subagent_type",
-      "agent-browser",
-      "GPT_IMAGE_API_KEY",
-    ];
-    for (const token of forbidden) {
-      const badLines = text
-        .split(/\r?\n/)
-        .map((line, index) => ({ line, index: index + 1 }))
-        .filter(({ line }) => line.includes(token))
-        .filter(({ line }) => !/(legacy|Legacy|兼容|可选|不是默认|明确要求)/.test(line));
-      for (const hit of badLines) {
-        fail(`${skill} has default-looking forbidden token ${token} on line ${hit.index}`);
-      }
+  const text = fs.readFileSync(skillPath, "utf8");
+  const upstreamRef = `../../skills/${skill}/SKILL.md`;
+  if (!text.includes(upstreamRef)) {
+    fail(`${skill} wrapper must reference upstream skill path`);
+  }
+  const resolvedUpstream = path.resolve(path.dirname(skillPath), upstreamRef);
+  if (!fs.existsSync(resolvedUpstream)) {
+    fail(`${skill} upstream reference does not resolve: ${upstreamRef}`);
+  }
+  if (!text.includes("## Source Of Truth")) {
+    fail(`${skill} wrapper must declare the upstream source of truth`);
+  }
+
+  const forbidden = [
+    ".claude/agents",
+    ".claude/hooks",
+    "Agent(subagent_type",
+    "agent-browser",
+    "GPT_IMAGE_API_KEY",
+  ];
+  for (const token of forbidden) {
+    const badLines = text
+      .split(/\r?\n/)
+      .map((line, index) => ({ line, index: index + 1 }))
+      .filter(({ line }) => line.includes(token))
+      .filter(
+        ({ line }) =>
+          !/(legacy|compatib|upstream|only when|explicit|do not|not require|fallback)/i.test(
+            line,
+          ),
+      );
+    for (const hit of badLines) {
+      fail(`${skill} has default-looking forbidden token ${token} on line ${hit.index}`);
     }
   }
 }
@@ -94,7 +122,11 @@ try {
     .split(/\r?\n/)
     .filter(Boolean);
   for (const file of diff) {
-    if (!allowedTopLevel.some((prefix) => file === prefix.slice(0, -1) || file.startsWith(prefix))) {
+    if (
+      !allowedTopLevel.some(
+        (prefix) => file === prefix.slice(0, -1) || file.startsWith(prefix),
+      )
+    ) {
       fail(`unexpected non-overlay diff file: ${file}`);
     }
   }
@@ -102,16 +134,19 @@ try {
   fail(`could not inspect git diff main..HEAD: ${error.message}`);
 }
 
+const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "oh-story-codex-package-"));
 try {
-  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "oh-story-codex-package-"));
   const outDir = path.join(tmpDir, "oh-story-skills");
   build(outDir);
   validatePackage(outDir);
-  fs.rmSync(tmpDir, { recursive: true, force: true });
 } catch (error) {
   fail(`clean package validation failed: ${error.message}`);
+} finally {
+  fs.rmSync(tmpDir, { recursive: true, force: true });
 }
 
 if (!process.exitCode) {
-  console.log("Codex overlay check passed");
+  console.log(
+    `Codex overlay check passed (${expectedSkills.length} wrappers, upstream-aligned)`,
+  );
 }

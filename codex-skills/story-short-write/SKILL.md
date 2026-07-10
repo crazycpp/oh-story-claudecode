@@ -1,26 +1,21 @@
 ---
 name: story-short-write
-description: Codex 原生短篇网文写作流程。支持构思、结构、正文、情绪拉扯和润色。
+description: Codex 短篇网文写作入口。执行上游最新短篇参考栈、投稿工艺、质量检测、Codex agents 和 fallback 流程。
 ---
 
-# story-short-write for Codex
+# story-short-write for Codex Desktop
 
 Upstream skill: `../../skills/story-short-write/SKILL.md`
 
-## Codex Default
+## Source Of Truth
 
-Write short-form fiction in the current session:
+Read the upstream skill completely before acting and follow its Codex-compatible workflow. The current short-format, short-craft, short-deslop, submission-craft, genre-style, output-contract, deterministic-check, and revision rules are authoritative.
 
-1. Confirm target platform, emotional promise, protagonist wound/desire, reversal type, and ending taste.
-2. Build premise, hook, section outline, reveal sequence, and payoff.
-3. Draft in batches if the requested length is large.
-4. Keep section markers, dialogue style, paragraph density, and continuity consistent.
-5. Review for emotional pull, reversal clarity, format, and AI-like phrasing.
+## Desktop Additions
 
-## Upstream Material
+- Use deployed Codex custom agents with matching `agent_type` when available.
+- Keep project state and generated fiction within the selected workspace.
 
-Read upstream short-writing guidance at `../../skills/story-short-write/SKILL.md` and load references under `../../skills/story-short-write/references/` as needed.
+## Fallback
 
-## Compatibility
-
-Legacy/compatibility multi-agent writing remains upstream. Codex default writing happens in the current session.
+If custom agents are unavailable, follow the upstream direct/solo path and report it. Do not restore removed long-form references or use the old independent short-writing workflow.

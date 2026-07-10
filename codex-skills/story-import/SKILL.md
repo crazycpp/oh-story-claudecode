@@ -1,25 +1,21 @@
 ---
 name: story-import
-description: Codex 原生小说导入流程。把已有小说整理成可复用、可继续写作的项目资料。
+description: Codex 小说导入入口。执行上游最新长短篇分流、项目交付物、状态追踪和 Codex agent fallback 流程。
 ---
 
-# story-import for Codex
+# story-import for Codex Desktop
 
 Upstream skill: `../../skills/story-import/SKILL.md`
 
-## Codex Default
+## Source Of Truth
 
-Import existing fiction in the current session:
+Read the upstream skill completely and follow its Codex-compatible import pipeline. The upstream source classification, long/short routing, artifact contracts, project layout, state tracking, validation, and continuation handoff are authoritative.
 
-1. Determine whether the source is short-form, long-form, outline-only, or mixed material.
-2. Split source into structure, characters, settings, plot state, chapter index, and unresolved hooks.
-3. Produce project files or a migration report according to the user's requested destination.
-4. Validate that every major character, timeline state, and known open thread has a home.
+## Desktop Additions
 
-## Upstream Material
+- Use deployed Codex agents when available for extraction and verification.
+- Keep all generated artifacts inside the user-selected project directory.
 
-Read upstream import guidance and relevant references under `../../skills/story-import/references/`, especially length routing, structure mapping, state tracking, and character-state reverse material.
+## Fallback
 
-## Compatibility
-
-Legacy/compatibility validation can remain upstream. Codex default validation is direct file reading and cross-checking in the current session.
+If custom agents are unavailable, run the upstream serial/direct path and report the fallback. Do not reduce the required deliverables.

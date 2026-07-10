@@ -1,25 +1,21 @@
 ---
 name: story-short-analyze
-description: Codex 原生短篇网文拆解流程。分析故事核、情绪线、反转结构和共鸣层次。
+description: Codex 短篇拆文入口。执行上游最新材料边界、情绪反转分析、输出协议和 Codex fallback 流程。
 ---
 
-# story-short-analyze for Codex
+# story-short-analyze for Codex Desktop
 
 Upstream skill: `../../skills/story-short-analyze/SKILL.md`
 
-## Codex Default
+## Source Of Truth
 
-Analyze short-form stories in the current session:
+Read the upstream skill completely and follow its current Codex-compatible pipeline. Material validation, story-core analysis, emotional arc, reversal chain, craft extraction, output contracts, and quality checks are authoritative.
 
-1. Identify premise, emotional target, hook, reversal chain, and payoff.
-2. Map scene beats and information reveals.
-3. Extract reusable structure without copying protected text.
-4. Output a compact deconstruction report or reusable writing template.
+## Desktop Additions
 
-## Upstream Material
+- Use project files and deployed Codex agents when the upstream workflow calls for them.
+- Keep analysis artifacts resumable and traceable to source material.
 
-Read upstream short-analysis guidance and references under `../../skills/story-short-analyze/references/` as needed.
+## Fallback
 
-## Compatibility
-
-Legacy/compatibility execution remains upstream. Codex default is current-session analysis.
+If custom agents are unavailable, complete the upstream direct/solo analysis and report the fallback without dropping required outputs.

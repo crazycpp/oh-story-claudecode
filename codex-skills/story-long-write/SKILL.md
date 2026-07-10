@@ -1,26 +1,22 @@
 ---
 name: story-long-write
-description: Codex 原生长篇网文写作流程。支持立项、大纲、设定、章节草稿、续写和回炉。
+description: Codex 长篇网文写作入口。执行上游最新项目协议、节奏规划、质量守卫、Codex agents 和 fallback 流程。
 ---
 
-# story-long-write for Codex
+# story-long-write for Codex Desktop
 
 Upstream skill: `../../skills/story-long-write/SKILL.md`
 
-## Codex Default
+## Source Of Truth
 
-Write long-form web fiction in the current session:
+Read the upstream skill completely before acting and follow its Codex-compatible workflow. The upstream project state, outline rhythm, chapter positioning, word-count budget, genre prose cards, artifact contracts, deterministic checks, and revision rules are authoritative.
 
-1. Confirm target platform, genre, audience, tone, and update goal.
-2. Build premise, core hook, protagonist drive, conflict engine, and setting rules.
-3. Produce outline, volume arc, chapter beat sheet, or chapter prose depending on the request.
-4. Before prose, read relevant project context and upstream references.
-5. After prose, check format, continuity, word count target, hook strength, and AI-like phrasing.
+## Desktop Additions
 
-## Upstream Material
+- Use deployed Codex custom agents by their matching `agent_type` when available.
+- Use Codex Browser/web for factual research when needed and permitted.
+- Keep all project reads and writes within the selected novel workspace.
 
-Read upstream writing guidance at `../../skills/story-long-write/SKILL.md` and load references under `../../skills/story-long-write/references/` only as needed for the current step.
+## Fallback
 
-## Compatibility
-
-Legacy/compatibility multi-agent writing remains upstream. Codex must be able to complete planning, drafting, and review in the current session.
+If an agent is missing, malformed, stale, or returns `unknown agent_type`, follow the upstream direct/solo fallback and report it. Do not replace the upstream workflow with a simplified independent process.

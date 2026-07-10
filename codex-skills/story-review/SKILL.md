@@ -1,27 +1,21 @@
 ---
 name: story-review
-description: Codex 原生多维度故事审查流程。检查结构、人物、节奏、文风和前后逻辑。
+description: Codex 故事审查入口。执行上游最新 full/lean/solo 模式、确定性检测、Codex agents 和 fallback 流程。
 ---
 
-# story-review for Codex
+# story-review for Codex Desktop
 
 Upstream skill: `../../skills/story-review/SKILL.md`
 
-## Codex Default
+## Source Of Truth
 
-Review in the current session across four dimensions:
+Read the upstream skill completely and follow its Codex-compatible review pipeline. Agent validation, mode selection, rubric loading, findings schema, continuity checks, deterministic scripts, and final arbitration are authoritative.
 
-1. Story structure: hook, causal chain, pacing, reversals, chapter-end tension.
-2. Character relations: motivation, relationship pressure, voice, emotional credibility.
-3. Prose expression: clarity, density, dialogue, sensory detail, AI-like phrasing.
-4. Setting consistency: timeline, rules, facts, foreshadowing, unresolved threads.
+## Desktop Additions
 
-Lead with findings ordered by severity. Include concrete fix suggestions and quote only short necessary excerpts.
+- Use deployed Codex custom agents with matching `agent_type` when the runtime exposes them.
+- Use Codex Browser/web only for optional external fact checks, not as a substitute for reading project files.
 
-## Upstream Material
+## Fallback
 
-Read upstream review guidance and relevant references under `../../skills/story-review/references/` for platform-specific rubrics or craft checks.
-
-## Compatibility
-
-Legacy/compatibility multi-reviewer execution remains upstream. Codex default is a complete single-session review.
+If agents are unavailable or invalid, use the upstream lean/solo downgrade rules and report the effective mode. A fallback must still produce the required structured review.

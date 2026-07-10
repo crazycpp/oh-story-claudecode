@@ -1,27 +1,22 @@
 ---
 name: story-cover
-description: Codex 原生小说封面生成流程。默认使用图像生成能力，并复用上游封面风格参考。
+description: Codex 小说封面生成入口。复用上游封面需求、风格和平台尺寸规则，并优先使用 Desktop image_gen。
 ---
 
-# story-cover for Codex
+# story-cover for Codex Desktop
 
 Upstream skill: `../../skills/story-cover/SKILL.md`
 
-## Codex Default
+## Source Of Truth
 
-Use `image_gen` to create a cover after extracting:
+Read the upstream skill completely before generating. Reuse its requirements gathering, title/author checks, genre styles, platform dimensions, typography guidance, cropping rules, and delivery checks.
 
-- title
-- author name if provided
-- genre and target platform
-- visual motif, protagonist signal, mood, and cover text
+## Desktop Additions
 
-Before image generation, read upstream cover guidance and any relevant reference files under `../../skills/story-cover/references/`.
+- When `image_gen` is available, use it as the default generation backend.
+- Do not require `GPT_IMAGE_API_KEY`, `curl`, `jq`, or `base64` for the Desktop `image_gen` path.
+- Use the upstream API workflow only when `image_gen` is unavailable and the user explicitly chooses that compatibility path.
 
-## Output
+## Fallback
 
-Return the generated image and a short note covering title, genre signal, and visual direction. Do not ask the user to configure an API key for the Codex path.
-
-## Compatibility
-
-Legacy/compatibility API backends may exist upstream, but they are not the Codex default.
+If no image backend is available, produce a complete cover brief and platform-ready prompt instead of claiming an image was generated.

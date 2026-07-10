@@ -54,7 +54,7 @@ git push --force-with-lease origin codex/main
 
 ## Codex 安装策略
 
-不要把仓库根目录直接作为正式 Codex 插件目录。仓库根目录保留了上游 `skills/`，Codex 当前版本可能会自动扫描该目录，导致 UI 同时出现 Codex wrapper 和上游 legacy skill。
+不要把仓库根目录直接作为正式 Codex Desktop 插件目录。仓库根目录包含上游标准 `.agents/skills` 和 `skills/`，直接安装会让 Desktop 同时发现 wrapper 与上游原生 skill。
 
 正式本地验证使用干净发布包：
 
@@ -88,13 +88,13 @@ node .codex-plugin\scripts\install-personal.js
 %USERPROFILE%\plugins\oh-story-skills
 ```
 
-该目录由脚本生成，不是仓库根目录的 junction。发布包根目录不包含 `skills/`；上游资料会被复制到：
+该目录由脚本生成，不是仓库根目录的 junction。发布包根目录的标准 `skills/` 只包含 Desktop wrapper；上游资料会被复制到：
 
 ```text
 .codex-plugin/upstream-skills/
 ```
 
-这样 Codex UI 只会展示 `codex-skills/` 中的 Codex-native wrapper。
+构建时源码 `codex-skills/` 会映射为发布包标准 `skills/`。这样 Codex UI 只会展示 Desktop wrapper；上游原生 Codex skill 会作为隐藏的执行资料源随包提供。
 
 个人 marketplace 文件位于：
 
@@ -125,15 +125,17 @@ node .codex-plugin\scripts\check-overlay.js
 
 检查内容包括：
 
-- Codex wrapper 完整
-- `agents/openai.yaml` 完整
+- 上游 skill 与 Codex wrapper 集合完全一致
+- 所有 wrapper 的 `agents/openai.yaml` 完整
 - 源码仓库中的上游引用路径可解析
-- 可生成不含顶层 `skills/` 的干净发布包
+- 可生成顶层 `skills/` 仅包含 Desktop wrapper 的标准发布包
+- 上游 Codex agents、hooks 和 references 已打包
+- 插件版本与上游版本一致
 - overlay 没有污染上游主体路径
 
 ## 设计原则
 
-- Codex wrapper 是入口和执行策略，不复制上游 reference 内容。
-- 上游 `skills/` 仍是 Claude/OpenClaw 原生实现和资料源。
-- Codex 默认使用当前会话、Codex Browser/web、`image_gen`。
-- 兼容路径只作为说明，不作为 Codex 默认执行要求。
+- Codex wrapper 是 Desktop 入口，不复制或重写上游工作流。
+- 上游 `skills/` 是 Claude Code、OpenCode、Codex CLI 和 OpenClaw 的共同事实来源。
+- wrapper 完整执行上游 Codex 路径，只补充 Codex Browser/web、`image_gen` 和 Desktop UI 元数据。
+- `story-setup` 默认选择 `target_cli=codex`，部署上游 `.codex/agents`、hooks、`AGENTS.md` 和 references。

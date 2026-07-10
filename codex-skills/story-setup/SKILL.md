@@ -1,41 +1,23 @@
 ---
 name: story-setup
-description: Codex 原生小说项目初始化流程。默认创建通用写作结构，不写入 Claude 专属基础设施。
+description: Codex 小说项目部署入口。执行上游 target_cli=codex 流程，部署 agents、hooks、AGENTS.md 和项目 references。
 ---
 
-# story-setup for Codex
+# story-setup for Codex Desktop
 
 Upstream skill: `../../skills/story-setup/SKILL.md`
 
-## Codex Default
+## Source Of Truth
 
-Create or repair a generic story project structure:
+Read the upstream skill completely before changing a project. Follow its merge-not-replace rules, deployment manifest, version sentinel, upgrade logic, validation checks, and installation report.
 
-```text
-设定/
-角色/
-大纲/
-正文/
-追踪/
-对标/
-拆文库/
-```
+## Codex Target
 
-Add practical starter files only when useful:
+- Default to `target_cli=codex` when invoked from this plugin, unless the user explicitly selects another or multiple environments.
+- Deploy and validate the upstream Codex assets: `AGENTS.md`, `.codex/agents/*.toml`, `.codex/hooks.json`, `.codex/hooks/story_codex_hook.py`, and `.codex/skills/story-setup/references/agent-references/`.
+- Preserve user-owned configuration and merge managed sections exactly as defined upstream.
+- Report the required project trust, `/hooks` review/trust, and new-session steps.
 
-- project overview
-- character index
-- setting notes
-- outline placeholder
-- progress tracker
-- writing rules
+## Fallback
 
-Do not create Claude-specific infrastructure in the Codex default path.
-
-## Upstream Material
-
-Read upstream setup guidance and templates for domain content. Reuse rule text when helpful, but write it into generic project files unless the user asks for compatibility setup.
-
-## Compatibility
-
-Legacy/compatibility setup remains upstream for users who explicitly want Claude/OpenClaw infrastructure.
+If Python is unavailable, do not hide the problem: deploy only what the upstream rules permit, report that Codex hooks cannot run, and keep skills usable through direct/solo fallback. Never deploy Claude-only infrastructure unless the user selected Claude compatibility.

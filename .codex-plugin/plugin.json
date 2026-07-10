@@ -1,6 +1,6 @@
 {
   "name": "oh-story-skills",
-  "version": "0.6.15-codex.1",
+  "version": "0.6.22-codex.1",
   "description": "面向 Codex 的 oh-story 中文网文写作工具箱 overlay。",
   "author": {
     "name": "worldwonderer / crazycpp"
@@ -18,7 +18,7 @@
   "interface": {
     "displayName": "Oh Story Skills for Codex",
     "shortDescription": "面向 Codex 的中文网文写作、扫榜、拆文和审查技能。",
-    "longDescription": "一组面向 Codex 的轻量包装技能，复用上游 oh-story 资料和脚本，同时保持上游 skills 目录可同步。",
+    "longDescription": "一组面向 Codex Desktop 的轻量包装技能，执行上游原生 Codex 流程，并补充 Browser、web、image_gen 和插件 UI 集成。",
     "developerName": "worldwonderer / crazycpp",
     "category": "Writing",
     "capabilities": [

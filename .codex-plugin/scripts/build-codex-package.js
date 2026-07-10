@@ -5,21 +5,21 @@ const path = require("path");
 const repoRoot = path.resolve(__dirname, "..", "..");
 const defaultOut = path.join(repoRoot, "dist", "oh-story-skills-codex");
 
-const expectedSkills = [
-  "browser-cdp",
-  "story",
-  "story-cover",
-  "story-deslop",
-  "story-import",
-  "story-long-analyze",
-  "story-long-scan",
-  "story-long-write",
-  "story-review",
-  "story-setup",
-  "story-short-analyze",
-  "story-short-scan",
-  "story-short-write",
-];
+function discoverSkillNames(rootDir = repoRoot) {
+  const candidates = [
+    path.join(rootDir, ".codex-plugin", "upstream-skills"),
+    path.join(rootDir, "skills"),
+  ];
+  const skillsRoot = candidates.find((candidate) => fs.existsSync(candidate));
+  if (!skillsRoot) return [];
+
+  return fs
+    .readdirSync(skillsRoot, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .filter((entry) => fs.existsSync(path.join(skillsRoot, entry.name, "SKILL.md")))
+    .map((entry) => entry.name)
+    .sort();
+}
 
 function parseArgs(argv) {
   const args = { out: defaultOut };
@@ -95,7 +95,7 @@ function copyPackage(outDir) {
   );
   copyRecursive(
     path.join(repoRoot, "codex-skills"),
-    path.join(outDir, "codex-skills"),
+    path.join(outDir, "skills"),
     rewriteWrapper,
   );
   copyRecursive(
@@ -110,23 +110,45 @@ function copyPackage(outDir) {
   if (fs.existsSync(path.join(repoRoot, "docs"))) {
     copyRecursive(path.join(repoRoot, "docs"), path.join(outDir, "docs"));
   }
+
+  const manifestPath = path.join(outDir, ".codex-plugin", "plugin.json");
+  const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+  manifest.skills = "./skills/";
+  fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
 }
 
 function validatePackage(outDir) {
   const rootSkills = path.join(outDir, "skills");
-  if (fs.existsSync(rootSkills)) {
-    throw new Error("package must not contain a top-level skills/ directory");
+  if (!fs.existsSync(rootSkills)) {
+    throw new Error("package must contain the canonical top-level skills/ directory");
   }
 
   const manifestPath = path.join(outDir, ".codex-plugin", "plugin.json");
   const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
-  if (manifest.skills !== "./codex-skills/") {
-    throw new Error("package manifest skills must point to ./codex-skills/");
+  if (manifest.skills !== "./skills/") {
+    throw new Error("package manifest skills must point to ./skills/");
+  }
+
+  const expectedSkills = discoverSkillNames(outDir);
+  if (expectedSkills.length === 0) {
+    throw new Error("package contains no upstream skills");
+  }
+  const wrapperRoot = rootSkills;
+  const actualSkills = fs
+    .readdirSync(wrapperRoot, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .filter((entry) => fs.existsSync(path.join(wrapperRoot, entry.name, "SKILL.md")))
+    .map((entry) => entry.name)
+    .sort();
+  if (JSON.stringify(actualSkills) !== JSON.stringify(expectedSkills)) {
+    throw new Error(
+      `wrapper set does not match upstream skills: expected ${expectedSkills.join(", ")}; got ${actualSkills.join(", ")}`,
+    );
   }
 
   for (const skill of expectedSkills) {
-    const wrapper = path.join(outDir, "codex-skills", skill, "SKILL.md");
-    const metadata = path.join(outDir, "codex-skills", skill, "agents", "openai.yaml");
+    const wrapper = path.join(wrapperRoot, skill, "SKILL.md");
+    const metadata = path.join(wrapperRoot, skill, "agents", "openai.yaml");
     if (!fs.existsSync(wrapper)) throw new Error(`missing wrapper: ${skill}`);
     if (!fs.existsSync(metadata)) throw new Error(`missing openai.yaml: ${skill}`);
 
@@ -139,6 +161,32 @@ function validatePackage(outDir) {
     if (!fs.existsSync(resolved)) {
       throw new Error(`${skill} rewritten upstream reference does not resolve`);
     }
+  }
+
+  const codexSetupRoot = path.join(
+    outDir,
+    ".codex-plugin",
+    "upstream-skills",
+    "story-setup",
+    "references",
+    "codex",
+  );
+  const requiredCodexAssets = [
+    "AGENTS.md.tmpl",
+    path.join("hooks", "hooks.json"),
+    path.join("hooks", "story_codex_hook.py"),
+  ];
+  for (const asset of requiredCodexAssets) {
+    if (!fs.existsSync(path.join(codexSetupRoot, asset))) {
+      throw new Error(`missing upstream Codex setup asset: ${asset}`);
+    }
+  }
+  const agentRoot = path.join(codexSetupRoot, "agents");
+  const agents = fs
+    .readdirSync(agentRoot)
+    .filter((file) => file.endsWith(".toml"));
+  if (agents.length < 7) {
+    throw new Error(`expected at least 7 Codex agents, found ${agents.length}`);
   }
 }
 
@@ -163,4 +211,4 @@ if (require.main === module) {
   }
 }
 
-module.exports = { build, validatePackage };
+module.exports = { build, discoverSkillNames, validatePackage };

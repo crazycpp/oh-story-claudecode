@@ -1,25 +1,21 @@
 ---
 name: story-long-analyze
-description: Codex 原生长篇网文拆解流程。分析黄金三章、人设架构、爽点设计和节奏控制。
+description: Codex 长篇拆文入口。执行上游最新批处理、材料边界、产物协议和 Codex agent fallback 流程。
 ---
 
-# story-long-analyze for Codex
+# story-long-analyze for Codex Desktop
 
 Upstream skill: `../../skills/story-long-analyze/SKILL.md`
 
-## Codex Default
+## Source Of Truth
 
-Analyze long-form works in batches inside the current session:
+Read the upstream skill completely and follow its Codex-compatible analysis pipeline. Its material checks, staged extraction, output contracts, style profile, batching, and continuation rules are authoritative.
 
-1. Confirm source scope and target output.
-2. Deconstruct golden chapters, character functions, plot modules, emotional hooks, and pacing.
-3. Summarize reusable craft patterns without copying protected text.
-4. Save or present structured analysis according to the user's requested format.
+## Desktop Additions
 
-## Upstream Material
+- Use deployed Codex agents for parallel extraction when available.
+- Keep progress and analysis artifacts resumable in the project workspace.
 
-Read upstream long-analysis guidance and references under `../../skills/story-long-analyze/references/` as needed. Prefer staged loading over loading all references at once.
+## Fallback
 
-## Compatibility
-
-Legacy/compatibility parallel extraction can remain upstream. Codex default is serial or batched current-session analysis.
+If the chapter-extractor agent is unavailable, follow the upstream serial/batched direct path and report the fallback without skipping required stages.

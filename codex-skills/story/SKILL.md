@@ -1,36 +1,22 @@
 ---
 name: story
-description: oh-story 网文工具箱的 Codex 主入口。根据用户需求自动路由到对应的 Codex 原生包装技能，并复用上游 skill 资料。
+description: oh-story 网文工具箱的 Codex 主入口。复用上游最新路由、版本检查、多书切换和 Codex fallback 规则。
 ---
 
-# story for Codex
+# story for Codex Desktop
 
 Upstream skill: `../../skills/story/SKILL.md`
 
-## Codex Default
+## Source Of Truth
 
-Classify the user's intent, then continue with the matching Codex wrapper:
+Before routing or acting, read the upstream skill completely and follow its Codex branch. The upstream routing table, project-state detection, multi-book switching, version checks, and agent fallback rules are authoritative.
 
-| Intent | Wrapper |
-|---|---|
-| Project setup | `$story-setup` |
-| Long-form market scan | `$story-long-scan` |
-| Short-form market scan | `$story-short-scan` |
-| Long-form analysis | `$story-long-analyze` |
-| Short-form analysis | `$story-short-analyze` |
-| Long-form writing | `$story-long-write` |
-| Short-form writing | `$story-short-write` |
-| Review | `$story-review` |
-| De-AI polish | `$story-deslop` |
-| Import existing story | `$story-import` |
-| Cover generation | `$story-cover` |
+## Desktop Additions
 
-If the intent is clear, proceed directly. If the request mixes multiple phases, propose the shortest ordered workflow and start with the first useful step.
+- Invoke child skills with `$story-*` names exposed by this plugin.
+- Prefer Codex Browser/web and `image_gen` when a routed skill identifies those Desktop capabilities.
+- Version checks remain notify-only. Never update the repository or installed plugin without user confirmation.
 
-## Upstream Material
+## Fallback
 
-Use the upstream router as domain context only. Codex routing should name `$skill` wrappers instead of platform-specific invocation syntax.
-
-## Compatibility
-
-Claude/OpenClaw compatibility remains in upstream `skills/`. Codex defaults to the wrappers in `codex-skills/`.
+If a custom Codex agent is unavailable or returns `unknown agent_type`, follow the upstream direct/solo fallback and report it without failing the whole workflow.
